@@ -572,6 +572,8 @@ La gráfica tiene una autocorrelación negativa ya que tiene una altercancia muy
 
 # Regresión Múltiple 
 
+Ahora se realizará el modelo de regresión múltiple, como se mencionó en la matriz de correlación se utilizarán las variables que tienen buena correlación, pero no necesariamente los que tengan los valores más altos. Entonces se utilizarán las variables X3 (alcalinidad), X4 (PH), X5 (calcio), X6 (clorofila) y X7 (concentración media de mercurio) para contestar la siguiente pregunta: ¿las concentraciones de alcalinidad, clorofila, calcio en el agua del lago influyen en la concentración de mercurio de los peces?
+
 ## Medidas
 ```{r}
 medidas = db[3:7]
@@ -585,17 +587,24 @@ library(Hmisc)
 Rc = rcorr(as.matrix(medidas))
 Rc
 ```
+En la matriz de correlación se puede ver que todas las variables excepto la X7 tienen una correlación positiva entre ellas. En el caso de X7 se tiene una correlación negativa. En este caso, para realizar la regresión múltiple se utilizará la variable X7 como base. 
+
+En la matriz de P se puede observar que los valores son relativamente pequeños, por lo tanto, se utilizará el valor de significancia igual a 0.05 para asegurarnos que los datos sean estadísticamente significativos. 
+
 
 ```{r}
 pairs(medidas,labels=c("X3","X4","X5","X6","X7"),main="Matriz de dispersión",pch=20)
 ```
 
+En la parte superior se muestra una representación gráfica de las correlaciones entre las variables. 
 
 ```{r,message="FALSE"}
 library(GGally)
 ggpairs(medidas,lower = list(continuous = "smooth"),
         diag = list(continuous = "barDiag"), axisLabels = "none")
 ```
+
+El diagrama anterior muestra en la parte superior la correlación entre las variables y en la parte inferior los diagramas e dispesión. En la diagonal se muestran los histogramas. Podemos observar que las variables que tienen una mayor relación lineal con X7 (concentración mediade mercurio) son X4 (PH) con -0.575 y X3 (alcalinidad) con -0.594. 
 
 ```{r}
 library(ggcorrplot)
@@ -604,14 +613,22 @@ mat_cor <- hetcor(medidas)$correlations #matriz de correlación policorica
 ggcorrplot(mat_cor,type="lower",hc.order = T)
 ```
 
+En la gráfica anterior se puede observar que la correlación que existe entre las variables. Para que este proceso de implementación de regresión lineal múltiple sea efectiva se eligieron variables que no tengan un coeficiente de correlación muy alto, ya que es necesario que no exista colinealidad entre las variables. Por lo tanto, se puede observar que no existen colores intensos ya sean positivos o negativos en el gráfico.
+
 ## El modelo
+
+Para elaborar el modelo se empleará el método mixto que inicia como el método hacia adelante, es decir, el modelo inicial va a conener todas las variables. Mientras avanza el proceso se quitaran todas las variables de una en una para poder seleccionar el mejor modelo. 
 
 ```{r}
 R=lm(X7~X3+X4+X5+X6,data=medidas)
 summary(R)
 ```
 
+Como se mencionó anteriormente se inició el método con todas las variables. En el summary muestra que el modelo con todas las variables introducidas como predictores tiene un R cuadrada 0.4515 es decir que puede explicar el 45.15% de la variablidad observada en la concentración media de mercurio. Incluso se puede visualizar que el valor de p es menor al valor de significancia 0.5. 
+
 ### Selección del mejor modelo
+
+Ahora se seleccionará el mejor modelo utilizando el modelo con criterio de información de Akaike (AIC). Se puede observar que el modelo con menor AIC es el que únicamente contiene a X3, X5 y X6; es decir, que excluye al X4 con un AIC = -137.71.
 
 ```{r}
 step(R,direction="both",trace=1)
@@ -620,14 +637,18 @@ step(R,direction="both",trace=1)
 
 ### El mejor modelo
 
+Por lo tanto, el mejor modelo resultante en el proceso anterior es el que contiene a X3, X5 y X6. 
+
 ```{r}
 R1=lm(X7~X3+X5+X6,data=medidas)
 S=summary(R1)
 S
 ```
-
+En el summary muestra que el modelo con todas las variables introducidas menos la X4 como predictores tiene un R cuadrada 0.4394 es decir que puede explicar el 43.94% de la variablidad observada en la concentración media de mercurio. Incluso se puede visualizar que el valor de p es menor al valor de significancia 0.5. 
 
 ### Intervalos de confianza
+
+Se calcularán los intervalos de confianza para cada uno de los coeficientes parciales de la regresión. 
 
 ```{r}
 confint(R1)
@@ -652,6 +673,8 @@ shapiro.test(E)
 
 ```
 
+La gráfica del Q-Q plot muestra una distribución normal es ideal. Por otro lado, el histograma muestra una distribución simétrica. 
+
 ### Homocedasticidad y modelo apropiado
 
 Gráfica Valores estimados vs Residuos
@@ -662,6 +685,7 @@ abline(h=0,col="red")
 text(Y[],E[],1:30,cex=0.8,pos=3,offset=0.2)
 ```
 
+La dispersión de los residuos es constante en toda la gráfica, es decir que cumple con los supuestos.
 
 ### Independencia
 
@@ -673,13 +697,14 @@ plot(c(1:n),R1$residuals,type="l",xlab="Orden de las observaciones",ylab="Residu
 abline(h=0,col="red")
 ```
 
+La gráfica tiene una autocorrelación negativa ya que tiene una altercancia muy marcada de residuos positivos y negativos
 
 ```{r}
-#Prueba de autocorrelación para verificar independencia: H0: rho=0
-
 library(car)
 dwt(R1,alternative="two.sided")
 ```
+Ahora se realizó la prueba de autocorrelación para verificar independencia: H0: rho=0
+
 
 ## Datos atípicos o influyentes
 
@@ -704,36 +729,39 @@ which(abs(medidas$residuos_estandarizados)>3)
 
 ```
 
+En la gráfica anterior se muestra que no hay valores atípicos ya que no existen valores que mayores a 3. 
+
 ### Datos influyentes
 
 ```{r}
 summary(influence.measures(R1))
 ```
 
+En la tabla anterior se muestran las observaciones que son influyentes significativamente las últimas dos medidas son las que generan información importante. Esta tabla se utiliza para saber el impacto de las estimativas del modelo.
+
+Se consideran influyentes aquellas observaciones:  
+
+* Que tengan distancia de Cook superiores a 4/n = 4/53 = 0.07547
+* Que tengan leverages mayores a 2.5(p+1)/n = 2.5*(4/53) = 0.1886
+
+La primera es la distacia de Cook que mide cuánto cambian los valores ajustados en el modelo cuando se elimina el iésimo punto de datos. Por lo tanto, ya que no existen valores con una distancia de cook mayores a 0.07547 entonces se puede decir que no son valores tan influyentes. Por otro lado, las observaciones que son influyentes según el leverage (hat) son la 35, 37, 38 y 40. 
 
 ```{r}
 influence.measures(R1)
 ```
 
-Se consideran influyentes aquellas observaciones:  
-
-* que tengan leverages mayores a 2.5(p+1)/n = 2.5*3/30 =2.5/10 0.25
-* que tengan distancia de Cook superiores a 4/n.
-
-
 ```{r}
 influencePlot(R1)
 ```
 
+El diagrama anterior muestra gráficamente los datos influyentes del modelo. Los círculos grandes son los que tienen una mayor distancia y los más pequeños un menor valor en la distancia de Cook. 
 
-## Conclusión
+# Conclusión
 
-* Escribir el Modelo
-* Variabilidad explicada por el modelo (coeficiente de determinación)
-* Significancia del modelo: Valor p del modelo (F)
-* Si se satisfacen todos los supuestos del modelo (indicar ligeros alejamientos)
-* Si hay datos atípicos o datos que influyan en el modelo.
-* En caso de que se haya hecho el análisis sin datos influyentes, se reportan ambos modelos comparando sus mejoras.
+Para el modelo de ANOVA se contestó de primera instancia la pregunta de si existe diferencia significativa entre la concentración de mercurio y la edad de los peces. Por lo tanto, se utilizaron las variables de X12 (indicador de la edad de peces) y X7 (concentración media de mercurio en el tejido muscular de los peces). Sin embargo, se obtuvo que el valor de p = 0.438 era mayor al establecido (0.05). En consecuencia, no se contaba con la información suficiente para detectar una diferencia significativa. Así que se utilizaron nuevas variables (X7 y una variable que indica si la concentración promedio de mercurio supera los 0.5mg de Hg/kg) para realizar el modelo de ANOVA y contestar la pregunta que indica si existe evidencia para suponer que la concentración promedio de mercurio en los lagos es dañino para la salud humana. En este modelo se obtuvo un valor p = 9.68e-15; una distribución normal ideal y simétrica; una dispersión de los residuos constante y una autocorrelación negativa. Por lo tanto, se concluyó que la concentración media de mercurio si es relevante y puede afectar la salud humana. 
+Para el modelo de regresión lineal múltiple se utilizaron las variables X3 (alcalinidad), X4 (PH), X5 (calcio), X6 (clorofila) y X7 (concentración media de mercurio) para contestar la pregunta de si las concentraciones de alcalinidad, clorofila, calcio en el agua del lago influyen en la concentración de mercurio de los peces. Se obtuvo que la correlación entre las variables era buena pero no muy alta y se realizó el modelo con método mixto y criterio de información de Akaike (AIC). Al final so obtuvo que la variabilidad explicada por el modelo, es decir, el coeficiente de determinación es de 0.4394 entonces la variable predicadora explica el 43.94% de la variación. La significancia del modelo, es decir el valor de p es de 2.676e-06. Además, no existen datos atípicos ni datos que influyan en el modelo. Por lo tanto, se puede concluir los datos de alcalinidad, calcio y clorofila si influyen en la concentración de mercurio de los peces.
+Por último, para contestar la pregunta principal de la investigación se obtuvo que después de la implementación de los modelos de ANOVA y regresión lineal múltiple los principales factores que influyen en el nivel de contaminación por mercurio en los peces de los lagos de Florida son la alcalinidad, calcio, clorofila, concentración media de mercurio y la variable que indica si la concentración promedio de mercurio es mayor, menor o igual a 0.5 mg de Hg/kg.
+
 
 
 
