@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Este portafolio de implementación tiene el propósito de utilizar herramientas estadísticas vistas en el módulo uno para poder construir un modelo que pueda contestar la pregunta de investigación establecida. El problema consiste en la contaminación por mercurio de los peces que se encuentran en agua dulce, por lo tanto, se utilizará un dataset con información de 53 lagos de Florida. La pregunta que se debe contestar a lo largo de la implementación es la siguiente: ¿cuáles son los principales factores que influyen en el nivel de contaminación por mercurio en los peces de los lagos de Florida? 
 
-**Exploración de la base de datos**
+# Exploración de la base de datos
 
 # Leer datos 
 Se almacenarán todas las variables excepto X1 y X2 que son el número de identificación y nombre del lago para realizar la exploración y análisis de datos. 
@@ -272,6 +272,8 @@ skewness(X4)
 kurtosis(X4)
 ```
 
+La gráfica de Q-Q Plot muestra que tiene una distribución casi ideal. Por otro lado, en el histograma se muestra una distribución simétrica.
+
 ```{r}
 print("Cuartiles de X5")
 qqnorm(X5, main = "Normal Q-Q Plot de X5 (calcio)", col="deepskyblue4")
@@ -284,6 +286,8 @@ lines(x,y,col="red")
 skewness(X5)
 kurtosis(X5)
 ```
+
+La gráfica de Q-Q Plot muestra que tiene una distribución con colas gruesas, es decir, tiene una baja curtosis y una distribución platicúrtica. Por otro lado, en el histograma se muestra una distribución asimétrica con sesgo a la derecha.
 
 ```{r}
 print("Cuartiles de X6")
@@ -298,6 +302,8 @@ skewness(X6)
 kurtosis(X6)
 ```
 
+La gráfica de Q-Q Plot muestra que tiene una distribución con colas gruesas, es decir, tiene una baja curtosis y una distribución platicúrtica. Por otro lado, en el histograma se muestra una distribución asimétrica con sesgo a la derecha.
+
 ```{r}
 print("Cuartiles de X7")
 qqnorm(X7, main = "Normal Q-Q Plot de X7 (concentración de mercurio en el tejido muscular)", col="orangered3")
@@ -310,6 +316,8 @@ lines(x,y,col="red")
 skewness(X7)
 kurtosis(X7)
 ```
+
+La gráfica de Q-Q Plot muestra que tiene una distribución con colas delgadas, es decir, tiene una alta curtosis y una distribución Leptocúrtica. Por otro lado, en el histograma se muestra una distribución casi simétrica con ligero sesgo a la derecha.
 
 ```{r}
 print("Cuartiles de X8")
@@ -324,6 +332,8 @@ skewness(X8)
 kurtosis(X8)
 ```
 
+La gráfica de Q-Q Plot muestra que tiene una distribución con colas gruesas, es decir, tiene una baja curtosis y una distribución platicúrtica. Por otro lado, en el histograma se muestra una distribución asimétrica con sesgo a la derecha.
+
 ```{r}
 print("Cuartiles de X9")
 qqnorm(X9, main = "Normal Q-Q Plot de X9 (mínimo de la concentración de mercurio)", col="indianred3")
@@ -336,6 +346,8 @@ lines(x,y,col="red")
 skewness(X9)
 kurtosis(X9)
 ```
+
+La gráfica de Q-Q Plot muestra que tiene una distribución con colas gruesas, es decir, tiene una baja curtosis y una distribución platicúrtica. Por otro lado, en el histograma se muestra una distribución asimétrica con sesgo a la derecha.
 
 ```{r}
 print("Cuartiles de X10")
@@ -350,6 +362,8 @@ skewness(X10)
 kurtosis(X10)
 ```
 
+La gráfica de Q-Q Plot muestra que tiene una distribución con colas delgadas, es decir, tiene una alta curtosis y una distribución leptocúrtica. Por otro lado, en el histograma se muestra una distribución casi simétrica con un ligero sesgo a la derecha.
+
 ```{r}
 print("Cuartiles de X11")
 qqnorm(X11, main = "Normal Q-Q Plot de X11 (estimación de la concentración de mercurio)", col="darkmagenta")
@@ -363,7 +377,7 @@ skewness(X11)
 kurtosis(X11)
 ```
 
-
+La gráfica de Q-Q Plot muestra que tiene una distribución con colas gruesas, es decir, tiene una baja curtosis y una distribución platicúrtica. Por otro lado, en el histograma se muestra una distribución asimétrica con sesgo a la derecha.
 
 ### Variables categóricas
 #### Distribución de los datos (diagramas de barras, diagramas de pastel)
@@ -377,6 +391,7 @@ db_mercurio_cnt_table
 # Gráfica de Frecuencia
 barplot(db_mercurio_cnt_table, width = 1, cex.names = 0.6, col = c("cadetblue", "lightcoral"), main = "Frecuencia de Lagos que Superaron el Valor Establecido", xlab = "Frecuencia", ylab = "Estatus Concentración ", horiz = TRUE, las = 2, legend = c("mercurio < 0.5", "mercurio > 0.5"), args.legend = list(x = "topright", horiz = FALSE))
 ```
+La gráfica anterior muestra la frecuencia de lagos que superaron el valor establecido de 0.5 mg de Hg/kg. Por lo tanto, la barra rosa muestra que 22 lagos no son adecuados para la pesca ya que supera la cantidad de concentración de mercurio. Por otro lado, 31 lagos tienen un una concentración de mercurio menor a 0.5. 
 
 ```{r}
 db_ph_cnt = dbNum
@@ -390,16 +405,27 @@ colors <- c("cyan3", "yellowgreen", "goldenrod1")
 pie(db_ph_cnt_table, border="white", col = colors, main = "Gráfica del PH", labels = paste0(round(100 * db_ph_cnt_table/sum(db_ph_cnt_table), 2), "%"))
 legend("topright", c("Ácido", "Neutro", "Alcalino"), fill=colors)
 ```
+En el diagrama anterior se muestra el nivel de PH de los lagos divididos por ácido (menor a 7), neutro (igual a 7) y alcalino (mayor a 7). 
 
 ## 3. Explora la correlación entre las variables. Identifica cuáles son las correlaciones más fuertes y qué sentido tiene relacionarlas.
 ```{r}
 library(corrplot)
 corrplot(cor(dbNum), method="color", addCoef.col = "black")
 ```
+Al analizar la matriz podemos notar que las correlaciones que más destacan son las que tiene la variable X7 con X9 (0.93), X10 (0.92) y X11 (0.96) con una correlación fuerte positiva. Es probable que esto se deba a que los datos de todas estas variables miden la concentración media de mercurio. Asimismo, la matriz muestra que la variable X7 es la que tiene una correlación significativa ya sea positiva o negativa con las otras variables. Por lo tanto, esta será la variable principal para realizar los modelos más adelante.
 
-**Análisis de datos y pregunta base**
+A pesar de que las variables X9, X10 y X11 estén fuertemente correlacionadas con la X7, considero que para el análisis de datos y creación de modelos se utilizarán otras variables. Debido al supuesto que establece que ninguna variable independiente se encuentra altamente correlacionada con otra variable del modelo. Al elegir variables con alta correlación puede ocurrir un problema de multicolinealidad en modelos de regresión. 
 
-# Anova 
+
+# Análisis de datos y pregunta base
+
+Las dos herramientas estadísticas para realizar el análisis de datos y proporcionar información para contestar la pregunta base son el modelo ANOVA y la regresión múltiple.
+
+# ANOVA 
+
+Se utilizará el modelo ANOVA con el propósito de contestar la siguiente pregunta: ¿habrá diferencia significativa entre la concentración de mercurio y la edad de los peces?
+Por lo tanto, para realizarlo se utilizarán los datos de X12 (indicador de la edad de los peces) y X7 (concentración media de mercurio en el tejido muscular de los peces). Primero, se acomodarán los datos de X7 en otro dataframe según los valores de edad, es decir, primero los que tengan valor 0 (jovenes) y después los que tengan valor 1 (maduros). Después se creará la variable edad que contiene los factores categóricos de X12 para poder realizar el ANOVa con un nivel de significación de 0.05.
+
 ```{r}
 db_mercurio_num = db[3:12]
 media_mercurio_j = db_mercurio_num[db_mercurio_num$X12 == 0, ]$X7
@@ -424,15 +450,50 @@ anova = aov(media_mercurio ~ edad)
 summary(anova)
 
 ```
+Ya que el valor de p (0.438) es mayor a 0.05 entonces encontramos que no existe un efecto significativo de la variable edad. Además, no aparecen los valores de significancia en el summary. Entonces se puede concluir que la relación de edad y concentración media no es estadísticamente significativa ya que no se cuenta con suficiente información para detectar una diferencia significativa.Por lo tanto, se utilizará el modelo ANOVA con otros datos y el mismo nivel de significación de 0.05.
+
+Ahora, se implementará el modelo con los datos de frecuencia de lagos que superaron el valor establecido (0.5). Esto se realizará con el fin de contestar la pregunta: ¿hay evidencia para suponer que la concentración promedio de mercurio en los lagos es dañino para la salud humana? Considera que las normativas de referencia para evaluar los niveles máximos de Hg (Reglamento 34687-MAG y los reglamentos internacionales CE 1881/2006 y Codex Standard 193-1995) establecen que la concentración promedio de mercurio en productos de la pesca no debe superar los 0.5 mg de Hg/kg.
+
+Por lo tanto, valores que sean mayores a 0.5 no son adecuados para la pesca, de lo contrario son adecuados. 
+
 ```{r}
-m = tapply(media_mercurio, edad, mean)
-s = tapply(media_mercurio, edad, sd)
-n = tapply(media_mercurio, edad, length)
-print("Medias de la edad")
+#db_mercurio_num = db[3:12]
+media_mercurio_menor = dbNum[dbNum$X7 <= 0.5, ]$X7
+media_mercurio_mayor = dbNum[dbNum$X7 > 0.5, ]$X7
+
+print("menor")
+media_mercurio_menor
+len_media_mercurio_menor = length(media_mercurio_menor)
+print(len_media_mercurio_menor)
+print("mayor")
+media_mercurio_mayor
+len_media_mercurio_mayor = length(media_mercurio_mayor)
+print(len_media_mercurio_mayor)
+media_mercurio = c(media_mercurio_menor, media_mercurio_mayor)
+print("media mercurio")
+media_mercurio
+
+nivel = c(rep("Menor", len_media_mercurio_menor), rep("Mayor", len_media_mercurio_mayor))
+nivel = factor(nivel)
+nivel
+
+anova = aov(media_mercurio ~ nivel)
+summary(anova)
+
+```
+
+Para realizar el ANOVA primero se agregó la variable dependiente númerica (media_mercurio) y luego la variable independiente categórica (nivel). Además, en la tabla anterior podemos notar que el valor de p = 9.68e-15 es menor al valor de significancia establecido, por lo tanto, se continuará con el análisis.
+
+
+```{r}
+m = tapply(media_mercurio, nivel, mean)
+s = tapply(media_mercurio, nivel, sd)
+n = tapply(media_mercurio, nivel, length)
+print("Medias del nivel")
 m
-print("Desviación estándar de la edad")
+print("Desviación estándar del nivel")
 s
-print("Tamaño de la muestra por edad")
+print("Tamaño de la muestra por nivel")
 n
 ```
 ## Intervalos de confianza 
@@ -446,21 +507,24 @@ In
 Sup
 ```
 ```{r}
-plot(0,ylim=c(0,3),xlim=c(0,0.8), yaxt="n", ylab="",xlab="Concentración media de mercurio",main="Concentración media de mercurio por edad")
-axis(2,at=c(1:2),labels=c("J","M"))
+plot(0,ylim=c(0,3),xlim=c(0,1), yaxt="n", ylab="",xlab="Concentración media de mercurio",main="Concentración media de mercurio por nivel")
+axis(2,at=c(1:2),labels=c("May","Men"))
 for(i in 1:2){
 arrows(In[i],i,Sup[i],i, angle=90, code=3, length = 0.1, lwd = 2,col=i+2)
 points(m[i], i, pch=19, cex=1.1,col=i+2)}
 abline(v=mean(media_mercurio),lty=3,col="red")
 
 ```
+La gráfica anterior muestra la relación entre los niveles que son mayores o menores con la concentración media de mercurio. Se puede observar que la concentración de datos de la clasificación "menor" se encuentra entre 0.2 y 0.4, mientras que el grupo "mayor" se encuentra entre 0.7 y 1. 
 
 ## BoxPlot
 
 ```{r}
-boxplot(media_mercurio ~ edad, col = 2:5, horizontal = TRUE)
+boxplot(media_mercurio ~ nivel, col = 2:5, horizontal = TRUE)
 abline(v = mean(media_mercurio), lty = 3, col = "red")
 ```
+
+El boxplot muestra la distribución de datos en ambos grupos (menor y mayor), este indica que para el grupo "menor" la concetración de datos esta ligeramente a la derecha mientras que en el grupo "mayor" los datos se concentran a la izquierda. 
 
 ## Prueba de Tukey 
 
@@ -469,6 +533,9 @@ Tu=TukeyHSD(anova)
 Tu
 plot(TukeyHSD(anova))
 ```
+
+En la prueba de Tukey únicamente se muestra un par de datos, ya que no se tienen otros grupos. Por lo tanto, no se pueden realizar comparación ya que solo se tiene un par de datos. Sin embargo, se puede observar el intervalo de confianza del par menor-mayor. 
+
 
 ## Verificación de supuestos 
 
@@ -481,6 +548,8 @@ qqline(anova$residuals,col="red")
 hist(anova$residuals, col=0)
 ```
 
+La gráfica del Q-Q plot muestra una distribución normal es ideal. Por otro lado, el histograma muestra una distribución simétrica. 
+
 ### Homocedasticidad
 
 Gráfica Valores estimados vs Residuos 
@@ -489,6 +558,7 @@ Gráfica Valores estimados vs Residuos
 plot(anova$fitted.values,anova$residuals, ylab="Residuos", xlab="Valores estimados", main="Valores Estimados vs Residuos")
 abline(h=0,col="red")
 ```
+La dispersión de los residuos es constante en toda la gráfica, es decir que cumple con los supuestos.
 
 ### Independencia 
 Errores vs Orden de observación 
@@ -498,6 +568,7 @@ plot(c(1:53), anova$residuals, type="l", xlab= "Orden de las observaciones", yla
 abline(h=0,col="red")
 ```
 
+La gráfica tiene una autocorrelación negativa ya que tiene una altercancia muy marcada de residuos positivos y negativos
 
 # Regresión Múltiple 
 
