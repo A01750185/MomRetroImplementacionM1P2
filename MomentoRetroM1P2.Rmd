@@ -8,10 +8,39 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Este portafolio de implementación tiene el propósito de utilizar herramientas estadísticas vistas en el módulo uno para poder construir un modelo que pueda contestar la pregunta de investigación establecida. El problema consiste en la contaminación por mercurio de los peces que se encuentran en agua dulce, por lo tanto, se utilizará un dataset con información de 53 lagos de Florida. La pregunta que se debe contestar a lo largo de la implementación es la siguiente: ¿cuáles son los principales factores que influyen en el nivel de contaminación por mercurio en los peces de los lagos de Florida? 
+\begin{center} Módulo 1: Estadística para ciencia de datos \end{center}
+
+\begin{center} Inteligencia artificial avanzada para la ciencia de datos I \end{center}
+
+\begin{center} Grupo 101 \end{center}
+
+# Resumen
+
+La problemática por resolver es el obtener información sobre los principales factores que influyen en el nivel de contaminación por mercurio en los peces de los lagos de Florida. Los métodos y técnicas estadísticas utilizadas son cálculos de tendencia central, dispersión, tablas de distribución de frecuencia, medidas de posición y análisis de distribución de los datos (histogramas y diagramas) y matriz de correlación. Más adelante, se utilizan las herramientas estadísticas de ANOVA y regresión múltiple. Después de todo el proceso de exploración y análisis se obtuvo que los factores más influyentes son la alcalinidad, calcio, clorofila, concentración media de mercurio y la variable que indica si la concentración promedio de mercurio es mayor, menor o igual a 0.5 mg de Hg/kg.
+
+# Introducción
+
+Este portafolio de implementación tiene el propósito de utilizar herramientas estadísticas vistas en el módulo uno para poder construir un modelo que pueda contestar la pregunta de investigación establecida. El problema consiste en la contaminación por mercurio de los peces que se encuentran en agua dulce, por lo tanto, se utilizará un dataset con información de 53 lagos de Florida. El dataset contiene las siguientes variables: 
+* X1: Número de identificación 
+* X2: Nombre del lago
+* X3: Alcalinidad (mg/l de carbonato de calcio)
+* X4: PH
+* X5: Calcio (mg/l)
+* X6: Clorofila (mg/l)
+* X7: Concentración media de mercurio (parte por millón) en el tejido muscular del grupo de peces estudiados en cada lago
+* X8: Número de peces estudiados en el lago
+* X9: Mínimo de la concentración de mercurio en cada grupo de peces
+* X10: Máximo de la concentración de mercurio en cada grupo de peces
+* X11: Estimación (mediante regresión) de la concentración de mercurio en el pez de 3 años (o promedio de mercurio cuando la edad no está disponible)
+* X12: Indicador de la edad de los peces (0: jóvenes; 1: maduros)
+
+La pregunta que se debe contestar a lo largo de la implementación es la siguiente: ¿cuáles son los principales factores que influyen en el nivel de contaminación por mercurio en los peces de los lagos de Florida? Este análisis es de suma importancia para determinar cuáles son las principales causas de la contaminación en los peces. Esta información no sólo afecta a los peces, sino que a la salud humana, ya que los humanos consumimos pescado y puede resultar en algo dañino. 
+
+Por lo tanto, realizará como primera etapa la exploración de la base de datos que incluye el cálculo de medidas estadísticas, el uso de herramientas de visualización y exploración de la correlación de las variables. De esta manera, se realizarán cálculos de tendencia central, dispersión, tablas de distribución de frecuencia, medidas de posición, análisis de distribución de los datos (histogramas y diagramas) y la correlación entre las variables para poder adentrarnos en los datos. Realizando este proceso se obtendrán las variables más importantes para poder continuar en la siguiente etapa de análisis y realizar el modelo de ANOVA y el de regresión múltiple. Después se planea contestar el problema a resolver e indicar los factores más influyentes en el nivel de contaminación por mercurio en los peces.
+
 
 # Exploración de la base de datos
 
@@ -23,7 +52,7 @@ X3 = db$X3 # Alcalinidad (mg/l de carbonato de calcio)
 X4 = db$X4 # PH
 X5 = db$X5 # Calcio (mg/l)
 X6 = db$X6 # Clorofila (mg/l)
-X7 = db$X7 # Concentración media de mercurio (parte por millón) en el tejido muscualar del grupo de peces estudiados en cada lago
+X7 = db$X7 # Concentración media de mercurio (parte por millón) en el tejido muscular del grupo de peces estudiados en cada lago
 X8 = db$X8 # Número de peces estudiados en el lago
 X9 = db$X9 # Mínimo de la concentración de mercurio en cada grupo de peces
 X10 = db$X10 # Máximo de la concentración de mercurio en cada grupo de peces
@@ -763,7 +792,9 @@ Para el modelo de regresión lineal múltiple se utilizaron las variables X3 (al
 Por último, para contestar la pregunta principal de la investigación se obtuvo que después de la implementación de los modelos de ANOVA y regresión lineal múltiple los principales factores que influyen en el nivel de contaminación por mercurio en los peces de los lagos de Florida son la alcalinidad, calcio, clorofila, concentración media de mercurio y la variable que indica si la concentración promedio de mercurio es mayor, menor o igual a 0.5 mg de Hg/kg.
 
 
+# Anexos
 
+Liga de repositorio: https://github.com/A01750185/MomRetroImplementacionM1P2.git
 
 
 
